@@ -4,16 +4,18 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\Gender;
 use App\Enums\Role;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar
+class User extends Authenticatable implements FilamentUser, HasName
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -24,7 +26,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
      * @var list<string>
      */
     protected $fillable = [
-        'nama',
+        'nama_lengkap',
         'email',
         'nomor_handphone',
         'role',
@@ -75,9 +77,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return false;
     }
 
-    public function getFilamentAvatarUrl(): ?string
+    public function getFilamentName(): string
     {
-        return Storage::url($this->profile_picture_path);
+        return $this->nama_lengkap ?? 'User';
     }
 
     public function absensi()

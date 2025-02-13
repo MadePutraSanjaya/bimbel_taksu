@@ -22,4 +22,9 @@ class MataPembelajaran extends Model
     {
         return $this->hasMany(Penilaian::class);
     }
+
+    public function attachments()
+    {
+        return $this->morphMany(AttachmentMateri::class, 'attachmentable');
+    }
 }

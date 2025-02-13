@@ -8,15 +8,9 @@ class Kelas extends Model
 {
     protected $fillable = [
         'nama_kelas',
-        'mata_pembelajaran_id',
         'jadwal_hadir',
         'jadwal_pulang'
     ];
-
-    public function mataPembelajaran()
-    {
-        return $this->belongsTo(MataPembelajaran::class, 'mata_pembelajaran_id');
-    }
 
     public function absensi()
     {
