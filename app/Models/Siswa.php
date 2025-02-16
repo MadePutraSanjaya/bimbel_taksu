@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Absensi extends Model
+class Siswa extends Model
 {
-    protected $table = 'siswas';
-
     protected $fillable = [
-        'status'
+        'user_id',
+        'kelas_id',
     ];
 
     public function user()
@@ -22,5 +20,4 @@ class Absensi extends Model
     {
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
-   
 }

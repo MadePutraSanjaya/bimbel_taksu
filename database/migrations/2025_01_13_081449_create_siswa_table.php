@@ -12,13 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('absensis', function (Blueprint $table) {
+        Schema::create('siswas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kelas_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('kelas_id')->constrained()->onDelete('cascade');
             $table->integer('jumlah_hadir')->default(0);
             $table->integer('jumlah_alpha')->default(0);
-            $table->enum('status', [StatusHadir::HADIR->value, StatusHadir::ALPHA->value, StatusHadir::SAKIT->value,])->default(StatusHadir::ALPHA->value,);
+            $table->enum('status', [StatusHadir::HADIR->value, StatusHadir::ALPHA->value, StatusHadir::IZIN->value,])->default(StatusHadir::ALPHA->value,);
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('absensis');
+        Schema::dropIfExists('siswas');
     }
 };

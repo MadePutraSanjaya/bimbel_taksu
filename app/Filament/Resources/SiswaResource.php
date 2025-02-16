@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KelasResource\Pages;
-use App\Filament\Resources\KelasResource\RelationManagers;
-use App\Models\Kelas;
+use App\Enums\Role;
+use App\Filament\Resources\SiswaResource\Pages;
+use App\Filament\Resources\SiswaResource\RelationManagers;
+use App\Models\Siswa;
 use Filament\Forms;
-use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -14,9 +14,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class KelasResource extends Resource
+class SiswaResource extends Resource
 {
-    protected static ?string $model = Kelas::class;
+    protected static ?string $model = Siswa::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -24,11 +24,16 @@ class KelasResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama_kelas')
+                Forms\Components\Select::make('user_id')
+                    ->relationship(
+                        'user',
+                        'nama_lengkap',
+                        fn($query) => $query->where('role', Role::SISWA->value)
+                    )
                     ->required(),
-                TimePicker::make('jadwal_hadir')
-                    ->required(),
-                TimePicker::make('jadwal_pulang')
+
+                Forms\Components\Select::make('kelas_id')
+                    ->relationship('kelas', 'nama_kelas')
                     ->required(),
             ]);
     }
@@ -37,9 +42,9 @@ class KelasResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama_kelas'),
-                Tables\Columns\TextColumn::make('jadwal_hadir'),
-                Tables\Columns\TextColumn::make('jadwal_pulang'),
+                Tables\Columns\TextColumn::make('user.nama_lengkap')
+                    ->label('Nama Siswa'),
+                Tables\Columns\TextColumn::make('kelas.nama_kelas'),
             ])
             ->filters([
                 //
@@ -64,9 +69,9 @@ class KelasResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKelas::route('/'),
-            'create' => Pages\CreateKelas::route('/create'),
-            'edit' => Pages\EditKelas::route('/{record}/edit'),
+            'index' => Pages\ListSiswas::route('/'),
+            'create' => Pages\CreateSiswa::route('/create'),
+            'edit' => Pages\EditSiswa::route('/{record}/edit'),
         ];
     }
 }

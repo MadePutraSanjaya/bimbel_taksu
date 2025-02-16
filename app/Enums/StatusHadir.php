@@ -5,6 +5,6 @@ namespace App\Enums;
 enum StatusHadir: string
 {
     case ALPHA = 'ALPHA';
-    case SAKIT = 'SAKIT';
+    case IZIN = 'IZIN';
     case HADIR = 'HADIR';
 }

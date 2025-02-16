@@ -8,7 +8,6 @@ class MataPembelajaran extends Model
 {
     protected $fillable = [
         'nama_pembelajaran',
-        'materi',
         'kelas_id',
         'status'
     ];

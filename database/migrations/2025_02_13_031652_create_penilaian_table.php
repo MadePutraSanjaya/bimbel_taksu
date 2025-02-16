@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('penilaians', function (Blueprint $table) {
             $table->id();
             $table->foreignId('mata_pembelajaran_id')->constrained('mata_pembelajarans')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('kelas_id')->constrained()->onDelete('cascade');
+            $table->foreignId('siswa_id')->constrained()->onDelete('cascade');
             $table->text('catatan')->nullable();
             $table->decimal('nilai', 5, 2);
             $table->timestamps();

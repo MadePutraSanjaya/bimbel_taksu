@@ -8,8 +8,7 @@ class Penilaian extends Model
 {
     protected $fillable = [
         'mata_pembelajaran_id',
-        'user_id',
-        'kelas_id',
+        'siswa_id',
         'catatan',
         'nilai'
     ];
@@ -19,13 +18,9 @@ class Penilaian extends Model
         return $this->belongsTo(MataPembelajaran::class, 'mata_pembelajaran_id');
     }
 
-    public function user()
+    public function siswa()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Siswa::class, 'siswa_id');
     }
 
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class, 'kelas_id');
-    }
 }

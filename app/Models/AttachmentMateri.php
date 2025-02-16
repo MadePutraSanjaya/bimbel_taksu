@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class AttachmentMateri extends Model
 {
+    protected $table = 'attachment_materi';
+
     use HasFactory;
 
     protected $fillable = [
