@@ -11,6 +11,9 @@ class Siswa extends Model
         'kelas_id',
     ];
 
+    protected $appends = ['nama_lengkap'];
+
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -20,4 +23,5 @@ class Siswa extends Model
     {
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
+
 }
