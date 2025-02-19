@@ -2,20 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PenilaianResource\Pages;
-use App\Models\Penilaian;
+use App\Enums\StatusMengajar;
+use App\Filament\Resources\MataPembelajaranResource\Pages;
+use App\Filament\Resources\MataPembelajaranResource\RelationManagers;
+use App\Models\MataPembelajaran;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PenilaianResource extends Resource
+class MataPembelajaranResource extends Resource
 {
-    protected static ?string $model = Penilaian::class;
+    protected static ?string $model = MataPembelajaran::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -23,26 +26,20 @@ class PenilaianResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nilai')
-                    ->label('Nilai')
-                    ->required()
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue(100),
-                Forms\Components\Select::make('mata_pembelajaran_id')
-                    ->label('Mata Pembelajaran')
-                    ->relationship('mataPembelajaran', 'nama_pembelajaran')
+                Forms\Components\TextInput::make('nama_pembelajaran')
                     ->required(),
-                Forms\Components\Select::make('siswa_id')
-                    ->label('Siswa')
-                    ->options(
-                        \App\Models\Siswa::with('user')->get()->pluck('user.nama_lengkap', 'id')
-                    )
-                    ->searchable()
+                Forms\Components\Select::make('kelas_id')
+                    ->relationship('kelas', 'nama_kelas')
                     ->required(),
-
-                Forms\Components\Textarea::make('catatan')
-                    ->label('Catatan'),
+                Forms\Components\FileUpload::make('attachments')
+                    ->directory('attachments')
+                    ->formatStateUsing(fn($record) => $record?->attachments ? $record->attachments->map(fn($attachment) => $attachment->path)->toArray() : [])
+                    ->label('Attachment')
+                    ->multiple()
+                    ->downloadable()
+                    ->previewable()
+                    ->uploadingMessage('Uploading attachment...')
+                    ->required(),
             ]);
     }
 
@@ -50,32 +47,33 @@ class PenilaianResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('mataPembelajaran.nama_pembelajaran')
-                    ->label('Mata Pembelajaran')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('siswa.user.nama_lengkap')
-                    ->label('Siswa')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('siswa.kelas.nama_kelas')
-                    ->label('Kelas')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai')
-                    ->label('Nilai')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('catatan')
-                    ->label('Catatan')
-                    ->limit(50),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->dateTime(),
+                Tables\Columns\TextColumn::make('nama_pembelajaran'),
+                Tables\Columns\TextColumn::make('kelas.nama_kelas'),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        StatusMengajar::SUDAH_MENGAJAR->value => 'success',
+                        StatusMengajar::BELUM_MENGAJAR->value => 'warning',
+                        default => 'warning',
+                    }),
             ])
             ->filters([
-               
+                //
             ])
-            
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+
+                    Action::make('approve')
+                        ->label('Sudah Mengajar')
+                        ->icon('heroicon-o-check')
+                        ->color('success')
+                        ->visible(fn ($record) => $record->status === StatusMengajar::BELUM_MENGAJAR->value)
+                        ->action(function ($record) {
+                            $record->update(['status' => StatusMengajar::SUDAH_MENGAJAR->value]);
+                            
+                        }),
+
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -87,16 +85,16 @@ class PenilaianResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // Tambahkan relation manager jika diperlukan
+            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPenilaians::route('/'),
-            'create' => Pages\CreatePenilaian::route('/create'),
-            'edit' => Pages\EditPenilaian::route('/{record}/edit'),
+            'index' => Pages\ListMataPembelajarans::route('/'),
+            'create' => Pages\CreateMataPembelajaran::route('/create'),
+            'edit' => Pages\EditMataPembelajaran::route('/{record}/edit'),
         ];
     }
 }
