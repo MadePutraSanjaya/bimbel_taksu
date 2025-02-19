@@ -10,10 +10,10 @@ class ListMataPembelajarans extends ListRecords
 {
     protected static string $resource = MataPembelajaranResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\CreateAction::make(),
-        ];
-    }
+    // protected function getHeaderActions(): array
+    // {
+    //     return [
+    //         Actions\CreateAction::make(),
+    //     ];
+    // }
 }

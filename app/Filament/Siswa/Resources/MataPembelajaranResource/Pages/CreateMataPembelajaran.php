@@ -8,5 +8,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateMataPembelajaran extends CreateRecord
 {
-    protected static string $resource = MataPembelajaranResource::class;
+    // protected static string $resource = MataPembelajaranResource::class;
 }

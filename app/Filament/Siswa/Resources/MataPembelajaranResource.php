@@ -46,12 +46,12 @@ class MataPembelajaranResource extends Resource
                 ->openUrlInNewTab(),
             
             
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
+            // ->bulkActions([
+            //     Tables\Actions\BulkActionGroup::make([
+            //         Tables\Actions\DeleteBulkAction::make(),
+            //     ]),
+            // ]);
     }
 
     public static function getRelations(): array
@@ -65,8 +65,8 @@ class MataPembelajaranResource extends Resource
     {
         return [
             'index' => Pages\ListMataPembelajarans::route('/'),
-            'create' => Pages\CreateMataPembelajaran::route('/create'),
-            'edit' => Pages\EditMataPembelajaran::route('/{record}/edit'),
+            // 'create' => Pages\CreateMataPembelajaran::route('/create'),
+            // 'edit' => Pages\EditMataPembelajaran::route('/{record}/edit'),
         ];
     }
 }
