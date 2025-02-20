@@ -11,8 +11,6 @@ class Siswa extends Model
         'kelas_id',
     ];
 
-    protected $appends = ['nama_lengkap'];
-
 
     public function user()
     {

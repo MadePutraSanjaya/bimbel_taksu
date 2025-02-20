@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kelas', function (Blueprint $table) {
+        Schema::create('pertemuans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kelas');
-            $table->time('jadwal_hadir')->default(0);
-            $table->time('jadwal_pulang')->default(0);
+            $table->integer('pertemuan_ke')->unique();
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kelas');
+        Schema::dropIfExists('pertemuans');
     }
 };

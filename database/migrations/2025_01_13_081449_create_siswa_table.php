@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('kelas_id')->constrained()->onDelete('cascade');
+            $table->foreignId('pertemuan_id')->nullable()->constrained()->onDelete('cascade');
             $table->integer('jumlah_hadir')->default(0);
             $table->integer('jumlah_alpha')->default(0);
             $table->enum('status', [StatusHadir::HADIR->value, StatusHadir::ALPHA->value, StatusHadir::IZIN->value,])->default(StatusHadir::ALPHA->value,);
