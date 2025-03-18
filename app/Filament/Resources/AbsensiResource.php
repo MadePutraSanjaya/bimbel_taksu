@@ -7,6 +7,7 @@ use App\Enums\StatusHadir;
 use App\Filament\Resources\AbsensiResource\Pages;
 use App\Filament\Resources\AbsensiResource\RelationManagers;
 use App\Models\Absensi;
+use App\Models\Siswa;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -38,12 +39,14 @@ class AbsensiResource extends Resource
                     ->live()
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
+                            $userIds = Siswa::where('kelas_id', $state)
+                                ->pluck('user_id')
+                                ->toArray();
+                                
                             $siswaList = User::where('role', Role::SISWA->value)
-                                ->whereHas('absensi', function ($query) use ($state) {
-                                    $query->where('kelas_id', $state);
-                                })
+                                ->whereIn('id', $userIds)
                                 ->get();
-
+                    
                             $siswadata = $siswaList->map(function ($siswa) {
                                 return [
                                     'user_id' => $siswa->id,
@@ -51,7 +54,7 @@ class AbsensiResource extends Resource
                                     'status' => StatusHadir::ALPHA->value
                                 ];
                             })->toArray();
-
+                    
                             $set('siswa_list', $siswadata);
                         }
                     }),
@@ -60,7 +63,8 @@ class AbsensiResource extends Resource
                     ->label('Pilih Pertemuan')
                     ->relationship('pertemuan', 'pertemuan_ke')
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->required(),
 
                 Forms\Components\Repeater::make('siswa_list')
                     ->label('Daftar Siswa')
@@ -163,10 +167,9 @@ class AbsensiResource extends Resource
                 ]
             );
         }
-    
+
         return $data;
     }
-    
 
     public static function mutateFormDataBeforeSave(array $data, Model $record): array
     {

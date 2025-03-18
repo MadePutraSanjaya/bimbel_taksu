@@ -23,7 +23,8 @@ class PertemuanResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('pertemuan_ke')
+                    ->required(),
             ]);
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\Gender;
+use App\Enums\Role;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
@@ -12,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -23,8 +26,68 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                //
-            ]);
+                Forms\Components\TextInput::make('nama_lengkap')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('nomor_handphone')
+                    ->tel()
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(255),
+
+                Forms\Components\Select::make('role')
+                    ->options([
+                        Role::ADMIN->value => 'Admin',
+                        Role::PENGAJAR->value => 'Pengajar',
+                        Role::SISWA->value => 'Siswa',
+                    ])
+                    ->required(),
+
+                Forms\Components\Textarea::make('alamat')
+                    ->maxLength(65535)
+                    ->columnSpanFull(),
+
+                Forms\Components\Select::make('gender')
+                    ->options([
+                        Gender::LAKI_LAKI->value => 'Laki-laki',
+                        Gender::PEREMPUAN->value => 'Perempuan',
+                    ])
+                    ->required(),
+
+                Forms\Components\TextInput::make('tempat_lahir')
+                    ->maxLength(255),
+
+                Forms\Components\DatePicker::make('tanggal_lahir')
+                    ->maxDate(now()),
+
+                Forms\Components\FileUpload::make('foto_profile_path')
+                    ->image()
+                    ->directory('profile-photos')
+                    ->maxSize(1024)
+                    ->label('Foto Profil'),
+
+                Forms\Components\Section::make('Password')
+                    ->schema([
+                        Forms\Components\TextInput::make('password')
+                            ->password()
+                            ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                            ->dehydrated(fn($state) => filled($state))
+                            ->required(fn(string $context): bool => $context === 'create')
+                            ->maxLength(255)
+                            ->label('Password'),
+
+                    ])
+                    ->collapsible()
+                    ->visible(fn(string $context): bool => $context === 'create' || $context === 'edit'),
+            ])
+            ->columns(2);
     }
 
     public static function table(Table $table): Table
