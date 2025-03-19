@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StudentsExport;
 use App\Models\MataPembelajaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use ZipArchive;
 
 class DownloadController extends Controller
@@ -35,4 +37,12 @@ class DownloadController extends Controller
 
         return response()->download($zipFilePath)->deleteFileAfterSend(true);
     }
+
+    public function students(Request $request)
+    {
+        $now = now();
+
+        return Excel::download(new StudentsExport($request->all()), "students-$now.xlsx");
+    }
+
 }

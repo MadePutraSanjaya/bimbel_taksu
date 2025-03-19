@@ -5,6 +5,8 @@ namespace App\Filament\Resources\AbsensiResource\Pages;
 use App\Filament\Resources\AbsensiResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Actions\Action;
+use Filament\Support\Colors\Color;
 
 class ListAbsensis extends ListRecords
 {
@@ -14,6 +16,9 @@ class ListAbsensis extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            Action::make('export')
+                ->color(Color::Green)
+                ->url(route('admin.download.students')),
         ];
     }
 }
